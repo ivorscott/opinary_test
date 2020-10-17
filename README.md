@@ -53,6 +53,21 @@ Example data structure
       "B": 2,
       "C": 3
     }
+  },
+  "tax-spending": {
+    "question": "Where would you like your tax dollars spent?",
+    "choices": {
+      "A": "Education",
+      "B": "Social Care",
+      "C": "Health Care",
+      "D": "Military"
+    },
+    "results": {
+      "A": 10500,
+      "B": 3000,
+      "C": 700,
+      "D": 400
+    }
   }
 }
 ```

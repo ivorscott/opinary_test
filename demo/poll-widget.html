@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Opinary Test</title>
+    <link href="poll-widget.css" rel="stylesheet" />
+    <!-- Load React. -->
+    <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+    <script
+      src="https://unpkg.com/react@16/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js"></script>
+
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+
+    <script src="mock-api.js"></script>
+    <script src="poll-chart.js"></script>
+
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+
+      const Branding = () => <span className="brand">Powered by Opinary</span>;
+
+      const Loader = () => (
+        <div className="lds-dual-ring">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      );
+
+      const PollResults = ({ question, choices, results }) => {
+        useEffect(() => {
+          const resultsArray = mapChartData(results, choices);
+          drawChart(resultsArray);
+        }, []);
+        return (
+          <div className="poll__results">
+            <h1 className="poll__results-title">Results</h1>
+            <p className="poll__results-question">{question}</p>
+            <div id="chart" />
+          </div>
+        );
+      };
+
+      const PollOptions = ({ choices, onClick }) =>
+        Object.keys(choices).map((option) => (
+          <li
+            key={`opt-${option}`}
+            onClick={() => onClick(option)}
+            className="poll__options-item"
+          >
+            {choices[option]}
+          </li>
+        ));
+
+      const Poll = ({ pollId }) => {
+        const previousSelection = getSelection(pollId);
+        const storedResults = getResults(pollId);
+
+        const [isLoading, setLoading] = useState(true);
+        const [selection, setSelection] = useState(previousSelection);
+        const [question, setQuestion] = useState("");
+        const [choices, setChoices] = useState({});
+        const [results, setResults] = useState({});
+
+        const updateResults = (selection) => {
+          results[selection] = results[selection] + 1;
+          saveSelection(pollId, selection);
+          saveResults(pollId, results);
+          setSelection(selection);
+        };
+
+        useEffect(() => {
+          const fetch = async () => {
+            const poll = await getPoll(pollId);
+            setQuestion(poll.question);
+            setChoices(poll.choices);
+            setResults(poll.results);
+            setLoading(false);
+          };
+          fetch();
+        }, []);
+
+        if (isLoading) {
+          return (
+            <div className="poll">
+              <Loader />
+            </div>
+          );
+        }
+
+        return (
+          <div className="poll">
+            {!selection ? (
+              <div>
+                <h1 className="poll__question">{question}</h1>
+                <ul className="poll__options">
+                  <PollOptions onClick={updateResults} choices={choices} />
+                </ul>
+              </div>
+            ) : (
+              <PollResults
+                question={question}
+                choices={choices}
+                results={storedResults}
+              />
+            )}
+            <Branding />
+          </div>
+        );
+      };
+
+      ReactDOM.render(
+        <Poll pollId="feel-today" />,
+        document.getElementById("opinary-widget")
+      );
+    </script>
+  </head>
+  <body>
+    <div id="opinary-widget"></div>
+  </body>
+</html>

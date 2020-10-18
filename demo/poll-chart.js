@@ -1,5 +1,5 @@
 const drawChart = (data) => {
-  const h = 140;
+  const h = 120;
   const w = 200;
   const margin = { top: 0, right: 0, bottom: 10, left: 5 };
   const height = h - margin.top - margin.bottom;
@@ -52,7 +52,7 @@ const drawChart = (data) => {
     .append("text")
     .attr("class", "text")
     .attr("x", (d) => xScale(d.option))
-    .attr("y", (d) => 100 - yScale(d.value) + 22)
+    .attr("y", (d) => 100 - yScale(d.value) + 5)
     .attr("font-family", "sans-serif")
     .attr("font-size", "12px")
     .attr("fill", "white")

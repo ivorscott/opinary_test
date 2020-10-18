@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
 export const drawChart = (data) => {
-  const h = 120;
+  const h = 100;
   const w = 200;
   const margin = { top: 0, right: 0, bottom: 10, left: 5 };
   const height = h - margin.top - margin.bottom;
@@ -54,7 +54,7 @@ export const drawChart = (data) => {
     .append("text")
     .attr("class", "text")
     .attr("x", (d) => xScale(d.option))
-    .attr("y", (d) => 100 - yScale(d.value) + 5)
+    .attr("y", (d) => 100 - yScale(d.value) - 15)
     .attr("font-family", "sans-serif")
     .attr("font-size", "12px")
     .attr("fill", "white")
